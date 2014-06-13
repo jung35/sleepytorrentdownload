@@ -1,0 +1,133 @@
+html, body {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  height: 100%;
+}
+
+.text-monospaced {
+  font-family: consolas, monospace;
+}
+
+#alertBox .modal-content {
+  background: #f2dede !important;
+}
+
+#alertBox .modal-header {
+  border: none;
+  padding-bottom: 10px;
+}
+
+#alertBox .modal-body {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+#alertBox .modal-footer {
+  border: none;
+  margin: 0;
+  padding-top: 10px;
+}
+
+.navbar  {
+  margin: 0;
+}
+
+#main-menu a {
+  cursor: pointer;
+}
+
+.torrent-menu {
+  border-bottom: 1px solid #ccc;
+}
+
+.torrent-menu > ul {
+  padding: 9px 15px 0;
+  font-size: 24px;
+  margin: 0;
+  list-style: none;
+}
+
+.torrent-menu > ul > li {
+  display: inline-block;
+  cursor: pointer;
+  color: #aaa;
+  margin: 0 20px 0 0;
+}
+
+.torrent-menu > ul > li:hover {
+  color: #333;
+}
+
+.torrent-viewer {
+  height: calc(100% - 103px);
+}
+
+.torrent-list {
+  list-style: none;
+  border-right: 1px solid #aaa;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #eee;
+}
+
+.torrent-list > li {
+  background: #fff;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.torrent-list > li:hover {
+  background: #daf1f8;
+}
+
+.torrent-list > li.selected,
+.torrent-list > li.selected .text-muted {
+  background: #5bc0de;
+  color: #fff !important;
+}
+
+.torrent-list-name {
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.torrent-list-files,
+.torrent-list-size {
+  font-size: 12px;
+}
+
+.torrent-list-progress {
+  padding: 10px 15px 0;
+}
+
+.torrent-list-progress .progress {
+  height: 10px;
+  padding: 0;
+  margin: 0;
+}
+
+.torrent-info {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.torrent-info > li {
+  display: none;
+  padding: 0 20px 20px;
+}
+
+.torrent-add {
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+}

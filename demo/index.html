@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <title></title>
+</head>
+<body>
+  <div class="modal fade" id="alertBox" tabindex="-1" role="dialog" aria-labelledby="alertBoxLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content alert-danger">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="alertBoxLabel">Something Went Wrong!</h4>
+        </div>
+        <div class="modal-body">test</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Dismiss</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="navbar navbar-default navbar-static-top" role="navigation">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-menu">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Sleepy Torrent Downloader</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-menu">
+      <ul class="nav navbar-nav">
+        <li><a class="addNewTorrent"><span class="glyphicon glyphicon-plus"></span> Add New Torrents</a></li>
+      </ul>
+      <p class="navbar-text">Server Time: 2:50PM</p>
+      <ul class="nav navbar-nav navbar-right">
+      </ul>
+    </div>
+  </nav>
+  <nav class="navbar torrent-menu">
+    <ul class="nav navbar-nav">
+      <li onClick="javascript:alert('start / pause');"><span class="glyphicon glyphicon-play"></span> / <span class="glyphicon glyphicon-pause"></span></li>
+      <li onClick="javascript:alert('stop');"><span class="glyphicon glyphicon-stop"></span></li>
+      <li id="downloadFile" class="invisible" onClick="javascript:alert('download');"><span class="text-success glyphicon glyphicon-download-alt"></span></li>
+    </ul>
+    <p class="navbar-text">Compressing (Zipping): #2</p>
+    <p class="navbar-text">Downloading: #3</p>
+    <p class="navbar-text">
+      <span class="glyphicon glyphicon-flash"></span> 40%
+    </p>
+    <p class="navbar-text">
+      <span class="glyphicon glyphicon-download"></span> 4MB/s
+    </p>
+    <p class="navbar-text">
+      <span class="glyphicon glyphicon-upload"></span> 2MB/s
+    </p>
+  </nav>
+
+  <div class="torrent-viewer">
+    <ul class="col-lg-4 col-md-4 col-sm-5 torrent-list">
+
+      <li id="torrent-view-1" class="allow-download">
+        <div class="row">
+          <div class="col-sm-12 torrent-list-name">#1 Super-duper-long-name-for-my-torrent</div>
+        </div>
+        <div class="row text-muted">
+          <div class="col-sm-6 torrent-list-files">Files: 5</div>
+          <div class="col-sm-6 torrent-list-size">Size: 112KB</div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 torrent-list-progress">
+            <span class="text-success">Ready For Download</span>
+          </div>
+        </div>
+      </li>
+
+      <li id="torrent-view-2">
+        <div class="row">
+          <div class="col-sm-12 torrent-list-name">#2 Super-duper-long-name-for-my-torrent</div>
+        </div>
+        <div class="row text-muted">
+          <div class="col-sm-6 torrent-list-files">Files: 5</div>
+          <div class="col-sm-6 torrent-list-size">Size: 112KB</div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 torrent-list-progress">
+            <span class="text-primary">Compressing File</span>
+          </div>
+        </div>
+      </li>
+
+      <li id="torrent-view-3">
+        <div class="row">
+          <div class="col-sm-12 torrent-list-name">#3 Super-duper-long-name-for-my-torrent</div>
+        </div>
+        <div class="row text-muted">
+          <div class="col-sm-6 torrent-list-files">Files: 5</div>
+          <div class="col-sm-6 torrent-list-size">Estimated Size: 112KB</div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 torrent-list-progress">
+            <div class="progress progress-striped active">
+              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                <span class="sr-only">40% Complete</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <li id="torrent-view-4">
+        <div class="row">
+          <div class="col-sm-12 torrent-list-name">#4 Super-duper-long-name-for-my-torrent</div>
+        </div>
+        <div class="row text-muted">
+          <div class="col-sm-6 torrent-list-files">Files: 5</div>
+          <div class="col-sm-6 torrent-list-size">Estimated Size: 112KB</div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 torrent-list-progress">
+            <span class="text-muted">In Queue</span>
+          </div>
+        </div>
+      </li>
+
+    </ul>
+    <ul class="col-lg-8 col-md-8 col-sm-7 torrent-info">
+      <li id="addNewTorrent">
+        <h2>Add New Torrent To Queue</h2>
+
+        <form class="form-horizontal" role="form">
+          <div class="torrent-add">
+            <div class="form-group">
+              <label for="torrent-name-1" class="col-sm-2 control-label">File Name 1</label>
+              <div class="col-sm-10">
+                <input name="torrent[1][name]" type="text" class="form-control" id="torrent-name-1" placeholder="File Name">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="torrent-magnet-1" class="col-sm-2 control-label">Magnet Link 1</label>
+              <div class="col-sm-10">
+                <input name="torrent[1][magnet]" type="text" class="form-control" id="torrent-magnet-1" placeholder="Magnet Link">
+              </div>
+            </div>
+          </div>
+          <div class="torrent-add-option form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <a href="#" onClick="javascript:moreTorrents();"><span class="glyphicon glyphicon-plus"></span> add more torrents</a>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-primary">Add To Queue</button>
+              <a onClick="javascript:clearTorrents();" class="btn btn-default">Clear</a>
+            </div>
+          </div>
+        </form>
+
+      </li>
+      <li id="torrent-info-1">
+
+        <h2>Super-duper-long-name-for-my-torrent <small>Added 2014/6/12 12:00 PM</small></h2>
+
+        <fieldset><legend>Files <small class="text-muted">5</small></legend>
+          <pre>
+README.md  --  5KB
+Fake-file.mov  --  100KB
+totally-real-handbook.pdf  --  1KB
+fakefilescover.png  --  1KB
+readme.html  --  5KB</pre>
+        </fieldset>
+
+        <fieldset><legend>Download <small class="text-muted">Ready For Download</small></legend>
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Progress</dt>
+            <dd>100%</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Ratio</dt>
+            <dd>1.0</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Downloaded</dt>
+            <dd>112KB</dd>
+            <dt>Avg. Download Speed</dt>
+            <dd>2MB/s</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Uploaded</dt>
+            <dd>112KB</dd>
+            <dt>Avg. Upload Speed</dt>
+            <dd>2MB/s</dd>
+          </dl>
+
+          <dl class="col-xs-12 dl-horizontal text-monospaced">
+            <dt>Connections</dt>
+            <dd>100</dd>
+
+            <dt>Info Hash</dt>
+            <dd>1196D87E533C9BB87927550A02A04BFF1E9DCE60</dd>
+          </dl>
+
+          <dl class="col-xs-12 dl-horizontal text-monospaced">
+            <dt>Finished Download</dt>
+            <dd>2014/5/12 12:00 PM</dd>
+            <dt>Finished Compressing</dt>
+            <dd>2014/5/12 12:00 PM</dd>
+          </dl>
+        </fieldset>
+
+        <fieldset><legend></legend>
+          <button onClick="javascript:doDelete(1);" type="button" class="btn btn-danger btn-lg btn-block">Delete Torrent</button>
+        </fieldset>
+      </li>
+      <li id="torrent-info-2">
+
+        <h2>Super-duper-long-name-for-my-torrent <small>Added 2014/6/12</small></h2>
+
+        <fieldset><legend>Files <small class="text-muted">5</small></legend>
+          <pre>
+README.md  --  5KB
+Fake-file.mov  --  100KB
+totally-real-handbook.pdf  --  1KB
+fakefilescover.png  --  1KB
+readme.html  --  5KB</pre>
+        </fieldset>
+
+        <fieldset><legend>Download <small class="text-muted">Compressing (Zipping) File</small></legend>
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Progress</dt>
+            <dd>100%</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Ratio</dt>
+            <dd>1.0</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Downloaded</dt>
+            <dd>112KB</dd>
+            <dt>Avg. Download Speed</dt>
+            <dd>2MB/s</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Uploaded</dt>
+            <dd>112KB</dd>
+            <dt>Avg. Upload Speed</dt>
+            <dd>2MB/s</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Connections</dt>
+            <dd>100</dd>
+          </dl>
+        </fieldset>
+
+        <fieldset><legend></legend>
+          <button onClick="javascript:doDelete(2);" type="button" class="btn btn-danger btn-lg btn-block">Delete Torrent</button>
+        </fieldset>
+      </li>
+      <li id="torrent-info-3">
+
+        <h2>Super-duper-long-name-for-my-torrent <small>Added 2014/6/12</small></h2>
+
+        <fieldset><legend>Files <small class="text-muted">5</small></legend>
+          <pre>
+README.md  --  5KB
+Fake-file.mov  --  100KB
+totally-real-handbook.pdf  --  1KB
+fakefilescover.png  --  1KB
+readme.html  --  5KB</pre>
+        </fieldset>
+
+        <fieldset><legend>Download <small class="text-muted">40%</small></legend>
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Progress</dt>
+            <dd>40%</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Ratio</dt>
+            <dd>1.0</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Downloaded</dt>
+            <dd>112KB</dd>
+            <dt>Avg. Download Speed</dt>
+            <dd>2MB/s</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Uploaded</dt>
+            <dd>112KB</dd>
+            <dt>Avg. Upload Speed</dt>
+            <dd>2MB/s</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Connections</dt>
+            <dd>100</dd>
+          </dl>
+        </fieldset>
+
+        <fieldset><legend></legend>
+          <button onClick="javascript:doDelete(3);" type="button" class="btn btn-danger btn-lg btn-block">Delete Torrent</button>
+        </fieldset>
+      </li>
+      <li id="torrent-info-4">
+
+        <h2>Super-duper-long-name-for-my-torrent <small>Added 2014/6/12</small></h2>
+
+        <fieldset><legend>Files <small class="text-muted">5</small></legend>
+          <pre>
+README.md  --  5KB
+Fake-file.mov  --  100KB
+totally-real-handbook.pdf  --  1KB
+fakefilescover.png  --  1KB
+readme.html  --  5KB</pre>
+        </fieldset>
+
+        <fieldset><legend>Download <small class="text-muted">In Queue</small></legend>
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Progress</dt>
+            <dd>In Queue</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Ratio</dt>
+            <dd>&infin;</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Downloaded</dt>
+            <dd>&infin;</dd>
+            <dt>Avg. Download Speed</dt>
+            <dd>&infin;</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Uploaded</dt>
+            <dd>&infin;</dd>
+            <dt>Avg. Upload Speed</dt>
+            <dd>&infin;</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Connections</dt>
+            <dd>&infin;</dd>
+          </dl>
+        </fieldset>
+
+        <fieldset><legend></legend>
+          <button onClick="javascript:doDelete(4);" type="button" class="btn btn-danger btn-lg btn-block">Delete Torrent</button>
+        </fieldset>
+      </li>
+    </ul>
+  </div>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="assets/js/bootstrap.min.js"></script>
+  <script src="assets/js/script.js"></script>
+</body>
+</html>
