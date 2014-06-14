@@ -180,7 +180,7 @@ socket.on('newTorrent', function(torrent) {
 </li>';
 
   var infoFormat = '<li id="torrent-info-'+torrentCount+'"> \
-  <h2>Super-duper-long-name-for-my-torrent <small>Added ' + date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate() + ' '+(date.getHours() - (daynight == 'PM' ? 12:0))+':'+date.getMinutes()+' '+daynight+'</small></h2> \
+  <h2>'+ torrent.name +' <small>Added ' + date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate() + ' '+(date.getHours() - (daynight == 'PM' ? 12:0))+':'+date.getMinutes()+' '+daynight+'</small></h2> \
   <fieldset><legend>Files <small class="text-muted">'+torrent.files.length+'</small></legend> \
     <pre>'+fileNames+'</pre> \
   </fieldset> \
