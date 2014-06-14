@@ -127,6 +127,10 @@ html, body {
   padding: 0 20px 20px;
 }
 
+.torrent-info-file-list {
+  word-wrap: normal;
+}
+
 .torrent-add {
   margin-bottom: 10px;
   border-bottom: 1px solid #ccc;

@@ -44,7 +44,6 @@
   <nav class="navbar torrent-menu">
     <ul class="nav navbar-nav">
       <li onClick="javascript:alert('start / pause');"><span class="glyphicon glyphicon-play"></span> / <span class="glyphicon glyphicon-pause"></span></li>
-      <li onClick="javascript:alert('stop');"><span class="glyphicon glyphicon-stop"></span></li>
       <li id="downloadFile" class="invisible" onClick="javascript:alert('download');"><span class="text-success glyphicon glyphicon-download-alt"></span></li>
     </ul>
     <p class="navbar-text">Compressing (Zipping): #2</p>
@@ -132,18 +131,18 @@
       <li id="addNewTorrent">
         <h2>Add New Torrent To Queue</h2>
 
-        <form class="form-horizontal" role="form">
+        <form class="torrent-add-form form-horizontal" action="" role="form">
           <div class="torrent-add">
             <div class="form-group">
               <label for="torrent-name-1" class="col-sm-2 control-label">File Name 1</label>
               <div class="col-sm-10">
-                <input name="torrent[1][name]" type="text" class="form-control" id="torrent-name-1" placeholder="File Name">
+                <input type="text" class="form-control" id="torrent-name-1" placeholder="File Name">
               </div>
             </div>
             <div class="form-group">
               <label for="torrent-magnet-1" class="col-sm-2 control-label">Magnet Link 1</label>
               <div class="col-sm-10">
-                <input name="torrent[1][magnet]" type="text" class="form-control" id="torrent-magnet-1" placeholder="Magnet Link">
+                <input type="text" class="form-control" id="torrent-magnet-1" placeholder="Magnet Link">
               </div>
             </div>
           </div>
@@ -166,8 +165,8 @@
         <h2>Super-duper-long-name-for-my-torrent <small>Added 2014/6/12 12:00 PM</small></h2>
 
         <fieldset><legend>Files <small class="text-muted">5</small></legend>
-          <pre>
-README.md  --  5KB
+          <pre class="torrent-info-file-list">
+README.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KB
 Fake-file.mov  --  100KB
 totally-real-handbook.pdf  --  1KB
 fakefilescover.png  --  1KB
@@ -224,7 +223,7 @@ readme.html  --  5KB</pre>
         <h2>Super-duper-long-name-for-my-torrent <small>Added 2014/6/12</small></h2>
 
         <fieldset><legend>Files <small class="text-muted">5</small></legend>
-          <pre>
+          <pre class="torrent-info-file-list">
 README.md  --  5KB
 Fake-file.mov  --  100KB
 totally-real-handbook.pdf  --  1KB
@@ -272,7 +271,7 @@ readme.html  --  5KB</pre>
         <h2>Super-duper-long-name-for-my-torrent <small>Added 2014/6/12</small></h2>
 
         <fieldset><legend>Files <small class="text-muted">5</small></legend>
-          <pre>
+          <pre class="torrent-info-file-list">
 README.md  --  5KB
 Fake-file.mov  --  100KB
 totally-real-handbook.pdf  --  1KB
@@ -320,7 +319,7 @@ readme.html  --  5KB</pre>
         <h2>Super-duper-long-name-for-my-torrent <small>Added 2014/6/12</small></h2>
 
         <fieldset><legend>Files <small class="text-muted">5</small></legend>
-          <pre>
+          <pre class="torrent-info-file-list">
 README.md  --  5KB
 Fake-file.mov  --  100KB
 totally-real-handbook.pdf  --  1KB

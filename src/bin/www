@@ -1,6 +1,14 @@
 #!/usr/bin/env node
 var debug = require('debug')('src');
 var app = require('../app');
+var torrentStream = require('torrent-stream');
+var async = require('async');
+var cache = require('memory-cache');
+
+var opt = {
+  tmp: 'C:/wamp/www/sleepytorrentdownload/src',
+  path: 'C:/wamp/www/sleepytorrentdownload/src/download',
+};
 
 app.set('port', process.env.PORT || 3000);
 
@@ -9,3 +17,68 @@ var server = app.listen(app.get('port'), function() {
 });
 
 var io = require('socket.io').listen(server);
+
+var mysql      = require('mysql');
+var connection = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'me',
+  password : 'secret',
+  database : 'sleepytorrentdownload'
+});
+
+connection.connect();
+
+io.on('connection', function(socket) {
+  socket.on('newTorrent', function(torrents, cb) {
+    var errorFiles = [];
+    torrents.forEach(function(torrent) {
+      console.log('[TORRENT] Req');
+      try {
+        var engine = torrentStream(torrent.magnet, opt);
+        var torrentInfo = {
+          name: torrent.name,
+          time: (+new Date),
+          files: []
+        };
+
+        engine.on('ready', function() {
+          engine.files.forEach(function(file) {
+            torrentInfo.files.push({
+              path: file.path,
+              size: file.length
+            });
+          });
+          console.log('newTorrent Info', torrentInfo);
+          io.emit('newTorrent', torrentInfo);
+
+          cache.put('torrentQueue[]')
+
+        });
+      } catch(err) {
+        errorFiles.push(torrent.name);
+      }
+    });
+
+    if(errorFiles.length != 0) {
+      cb(errorFiles);
+    }
+  });
+});
+
+var engine = torrentStream(torrent.magnet, opt);
+var torrentInfo = {
+  name: torrent.name,
+  time: (+new Date),
+  files: []
+};
+
+engine.on('ready', function() {
+  engine.files.forEach(function(file) {
+    torrentInfo.files.push({
+      path: file.path,
+      size: file.length
+    });
+  });
+  console.log('newTorrent Info', torrentInfo);
+  io.emit('newTorrent', torrentInfo);
+});
