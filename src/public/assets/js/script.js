@@ -152,7 +152,7 @@ var $torrentList = $('.torrent-list'),
 socket.on('newTorrent', function(torrent) {
   var torrentCount = $('.torrent-list li').size()+1;
   var date = new Date(torrent.time);
-  var daynight = date.getHours() - 12 > 12 ? 'PM' : 'AM';
+  var daynight = date.getHours() - 11 > 0 ? 'PM' : 'AM';
 
   var sum = 0;
   var fileNames = '';
@@ -180,7 +180,7 @@ socket.on('newTorrent', function(torrent) {
 </li>';
 
   var infoFormat = '<li id="torrent-info-'+torrentCount+'"> \
-  <h2>'+ torrent.name +' <small>Added ' + date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate() + ' '+(date.getHours() - (daynight == 'PM' ? 12:0))+':'+date.getMinutes()+' '+daynight+'</small></h2> \
+  <h2>'+ torrent.name +' <small>Added ' + date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate() + ' '+(date.getHours() - (daynight == 'PM' && date.getHours()-12 > 0 ? 12:0))+':'+date.getMinutes()+' '+daynight+'</small></h2> \
   <fieldset><legend>Files <small class="text-muted">'+torrent.files.length+'</small></legend> \
     <pre>'+fileNames+'</pre> \
   </fieldset> \
