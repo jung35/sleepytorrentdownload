@@ -29,7 +29,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Sleepy Torrent Downloader</a>
+      <a class="navbar-brand" href="/">Sleepy Torrent Downloader</a>
     </div>
 
     <div class="collapse navbar-collapse" id="main-menu">
@@ -125,6 +125,35 @@
           </div>
         </div>
       </li>
+      <% for(var i = 0; i < torrents.length; i++) {
+        torrents[i].parsedFiles = JSON.parse("["+torrents[i].files+"]"); %>
+      <li id="torrent-view-<%= torrents[i].id + 4 %>">
+        <div class="row">
+          <div class="col-sm-12 torrent-list-name">#<%= torrents[i].id + 4 %> <%= torrents[i].name %></div>
+        </div>
+        <div class="row text-muted">
+          <div class="col-sm-6 torrent-list-files">Files: <%= torrents[i].files ? torrents[i].parsedFiles.length : 0 %></div>
+          <div class="col-sm-6 torrent-list-size">Estimated Size: </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 torrent-list-progress">
+            <% if(torrents[i].pieces) { %>
+            <div class="progress progress-striped active">
+              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="<%= Math.round(torrents[i].pieces / torrents[i].dlpieces * 100) %>%" aria-valuemin="0" aria-valuemax="100" style="width: <%= Math.round(torrents[i].pieces / torrents[i].dlpieces * 100) %>%">
+                <span class="sr-only"><%= Math.round(torrents[i].pieces / torrents[i].dlpieces * 100) %>% Complete</span>
+              </div>
+            </div>
+            <% } else if(torrents[i].downloadedat) { %>
+            <span class="text-primary">Compressing File</span>
+            <% } else if(torrents[i].compressedat) { %>
+            <span class="text-success">Ready For Download</span>
+            <% } else { %>
+            <span class="text-muted">In Queue</span>
+            <% } %>
+          </div>
+        </div>
+      </li>
+      <% } %>
 
     </ul>
     <ul class="col-lg-8 col-md-8 col-sm-7 torrent-info">
@@ -362,6 +391,63 @@ readme.html  --  5KB</pre>
           <button onClick="javascript:doDelete(4);" type="button" class="btn btn-danger btn-lg btn-block">Delete Torrent</button>
         </fieldset>
       </li>
+      <% for(var i = 0; i < torrents.length; i++) {
+        torrents[i].parsedFiles = JSON.parse("["+torrents[i].files+"]");
+
+        var date = new Date(torrents[i].createdat * 1000);
+        console.log(date);
+        var daynight = date.getHours() - 11 > 0 ? 'PM' : 'AM';
+
+        torrents[i].parsedFiles = JSON.parse("["+torrents[i].files+"]");
+        %>
+
+      <li id="torrent-info-<%= torrents[i].id + 4 %>">
+
+        <h2>#<%= torrents[i].id + 4 %> <%= torrents[i].name %> <small>Added <%= date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate() + ' '+(date.getHours() - (daynight == 'PM' && date.getHours()-12 > 0 ? 12:0))+':'+date.getMinutes()+' '+daynight %></small></h2>
+
+        <fieldset><legend>Files <small class="text-muted"><%= torrents[i].files ? torrents[i].parsedFiles.length : 0 %></small></legend>
+          <pre class="torrent-info-file-list"><% if(torrents[i].files) {
+            for(var i = 0; i < torrents[i].parsedFiles.length; i++) {%>
+<%= torrents[i].parsedFiles[i].name %>  --  <% torrents[i].parsedFiles[i].size %>
+<% }} %></pre>
+        </fieldset>
+
+        <fieldset><legend>Download <small class="text-muted">In Queue</small></legend>
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Progress</dt>
+            <dd>In Queue</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Ratio</dt>
+            <dd>&infin;</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Downloaded</dt>
+            <dd>&infin;</dd>
+            <dt>Avg. Download Speed</dt>
+            <dd>&infin;</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Uploaded</dt>
+            <dd>&infin;</dd>
+            <dt>Avg. Upload Speed</dt>
+            <dd>&infin;</dd>
+          </dl>
+
+          <dl class="col-xs-6 dl-horizontal text-monospaced">
+            <dt>Connections</dt>
+            <dd>&infin;</dd>
+          </dl>
+        </fieldset>
+
+        <fieldset><legend></legend>
+          <button onClick="javascript:doDelete(4);" type="button" class="btn btn-danger btn-lg btn-block">Delete Torrent</button>
+        </fieldset>
+      </li>
+      <% } %>
     </ul>
   </div>
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>

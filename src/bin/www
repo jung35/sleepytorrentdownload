@@ -5,16 +5,16 @@ var torrentStream = require('torrent-stream');
 var async = require('async');
 var cache = require('memory-cache');
 
-var opt = {
-  tmp: 'C:/wamp/www/sleepytorrentdownload/src',
-  path: 'C:/wamp/www/sleepytorrentdownload/src/download',
-};
-
 app.set('port', process.env.PORT || 3000);
 
 var server = app.listen(app.get('port'), function() {
   debug('Express server listening on port ' + server.address().port);
 });
+
+var opt = {
+  tmp: 'C:/wamp/www/sleepytorrentdownload/src',
+  path: 'C:/wamp/www/sleepytorrentdownload/src/download',
+};
 
 var io = require('socket.io').listen(server);
 
@@ -23,7 +23,8 @@ var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
   password : '',
-  database : 'sleepytorrentdownload'
+  database : 'sleepytorrentdownload',
+  dateStrings: true
 });
 
 connection.connect();
@@ -42,16 +43,29 @@ io.on('connection', function(socket) {
         };
 
         engine.on('ready', function() {
+          connection.query('INSERT INTO torrent SET ?',
+            {
+
+              name: torrent.name,
+              magnet: torrent.magnet,
+              hash: engine.torrent.infoHash.toUpperCase(),
+              createdat: Math.round(+new Date / 1000)
+
+
+            }, function(err, result) {
+            if (err) throw err;
+
+            console.log(result);
+          });
+
           engine.files.forEach(function(file) {
             torrentInfo.files.push({
               path: file.path,
               size: file.length
             });
           });
-          console.log('newTorrent Info', torrentInfo);
+          console.log('newTorrent', torrentInfo);
           io.emit('newTorrent', torrentInfo);
-
-          cache.put('torrentQueue[]')
 
         });
       } catch(err) {

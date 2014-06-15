@@ -10,7 +10,7 @@ var currDownSpeed = 0;
 var currUpSize = 0;
 var currUpSpeed = 0;
 
-var url = 'magnet:?xt=urn:btih:d89d08d448efa0827cce742ef9efae47076cee53&dn=Game+of+Thrones+Season+1%2C2%2C3+complete+&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.publicbt.com%3A80&tr=udp%3A%2F%2Ftracker.istole.it%3A6969&tr=udp%3A%2F%2Fopen.demonii.com%3A1337';
+var url = 'magnet:?xt=urn:btih:1196d87e533c9bb87927550a02a04bff1e9dce60&dn=Game+of+Thrones+-+The+Complete+Season+3+%5BHDTV%5D&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.publicbt.com%3A80&tr=udp%3A%2F%2Ftracker.istole.it%3A6969&tr=udp%3A%2F%2Fopen.demonii.com%3A1337';
 
 var opt = {
   tmp: 'C:/wamp/www/sleepytorrentdownload/src',
@@ -27,8 +27,6 @@ engine.on('ready', function() {
     console.log('file:', file.path);
     stream = file.createReadStream();
   });
-      engine.destroy();
-      process.exit();
 
   async.whilst(function () {
     return true;
@@ -50,6 +48,7 @@ engine.on('ready', function() {
 
       console.log("Download Size", currDownSize, "Speed", currDownSpeed);
       console.log("Upload Size", currUpSize, "Speed", currUpSpeed);
+      console.log(engine.torrent.pieceLength);
     }
 
     if(pieceCount >= numPiece) {

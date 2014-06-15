@@ -103,7 +103,7 @@ function getSimpleByte(num) {
   } else if(num > 1024) {
     num = parseFloat(num / 1024.0).toFixed(2) + ' KB';
   } else {
-    num += " B";
+    num += ' B';
   }
 
   return num;
@@ -120,8 +120,8 @@ $('form.torrent-add-form').submit(function() {
     var tName = $newTorrentForm.find('#torrent-name-'+x).val(),
         tMagnet = $newTorrentForm.find('#torrent-magnet-'+x).val();
 
-    if(typeof tName == "string" &&
-       typeof tMagnet == "string" &&
+    if(typeof tName === 'string' &&
+       typeof tMagnet === 'string' &&
        tName.length > 0 &&
        tMagnet.length > 0)
     {
