@@ -1,4 +1,20 @@
-<!DOCTYPE html>
+<%
+
+function getSimpleByte(num) {
+  if(num > 1073741824) {
+    num = parseFloat(num / 1073741824.0).toFixed(2) + ' GB';
+  } else if(num > 1048576) {
+    num = parseFloat(num / 1048576.0).toFixed(2) + ' MB';
+  } else if(num > 1024) {
+    num = parseFloat(num / 1024.0).toFixed(2) + ' KB';
+  } else {
+    num += ' B';
+  }
+
+  return num;
+}
+
+%><!DOCTYPE html>
 <html>
 <head>
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
@@ -61,91 +77,34 @@
 
   <div class="torrent-viewer">
     <ul class="col-lg-4 col-md-4 col-sm-5 torrent-list">
-
-      <li id="torrent-view-1" class="allow-download">
-        <div class="row">
-          <div class="col-sm-12 torrent-list-name">#1 Super-duper-long-name-for-my-torrent</div>
-        </div>
-        <div class="row text-muted">
-          <div class="col-sm-6 torrent-list-files">Files: 5</div>
-          <div class="col-sm-6 torrent-list-size">Size: 112KB</div>
-        </div>
-        <div class="row">
-          <div class="col-sm-12 torrent-list-progress">
-            <span class="text-success">Ready For Download</span>
-          </div>
-        </div>
-      </li>
-
-      <li id="torrent-view-2">
-        <div class="row">
-          <div class="col-sm-12 torrent-list-name">#2 Super-duper-long-name-for-my-torrent</div>
-        </div>
-        <div class="row text-muted">
-          <div class="col-sm-6 torrent-list-files">Files: 5</div>
-          <div class="col-sm-6 torrent-list-size">Size: 112KB</div>
-        </div>
-        <div class="row">
-          <div class="col-sm-12 torrent-list-progress">
-            <span class="text-primary">Compressing File</span>
-          </div>
-        </div>
-      </li>
-
-      <li id="torrent-view-3">
-        <div class="row">
-          <div class="col-sm-12 torrent-list-name">#3 Super-duper-long-name-for-my-torrent</div>
-        </div>
-        <div class="row text-muted">
-          <div class="col-sm-6 torrent-list-files">Files: 5</div>
-          <div class="col-sm-6 torrent-list-size">Estimated Size: 112KB</div>
-        </div>
-        <div class="row">
-          <div class="col-sm-12 torrent-list-progress">
-            <div class="progress progress-striped active">
-              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-                <span class="sr-only">40% Complete</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-
-      <li id="torrent-view-4">
-        <div class="row">
-          <div class="col-sm-12 torrent-list-name">#4 Super-duper-long-name-for-my-torrent</div>
-        </div>
-        <div class="row text-muted">
-          <div class="col-sm-6 torrent-list-files">Files: 5</div>
-          <div class="col-sm-6 torrent-list-size">Estimated Size: 112KB</div>
-        </div>
-        <div class="row">
-          <div class="col-sm-12 torrent-list-progress">
-            <span class="text-muted">In Queue</span>
-          </div>
-        </div>
-      </li>
       <% for(var i = 0; i < torrents.length; i++) {
-        torrents[i].parsedFiles = JSON.parse("["+torrents[i].files+"]"); %>
-      <li id="torrent-view-<%= torrents[i].id + 4 %>">
+        var currTorrent = torrents[i];
+        currTorrent.parsedFiles = JSON.parse("["+currTorrent.files+"]");
+
+        var sumFiles = 0;
+        for(var x = 0; x < currTorrent.parsedFiles.length; x++) {
+
+        }
+        %>
+      <li id="torrent-view-<%= currTorrent.id %>">
         <div class="row">
-          <div class="col-sm-12 torrent-list-name">#<%= torrents[i].id + 4 %> <%= torrents[i].name %></div>
+          <div class="col-sm-12 torrent-list-name">#<%= currTorrent.id %> <%= currTorrent.name %></div>
         </div>
         <div class="row text-muted">
-          <div class="col-sm-6 torrent-list-files">Files: <%= torrents[i].files ? torrents[i].parsedFiles.length : 0 %></div>
+          <div class="col-sm-6 torrent-list-files">Files: <%= currTorrent.files ? currTorrent.parsedFiles.length : 0 %></div>
           <div class="col-sm-6 torrent-list-size">Estimated Size: </div>
         </div>
         <div class="row">
           <div class="col-sm-12 torrent-list-progress">
-            <% if(torrents[i].pieces) { %>
+            <% if(currTorrent.pieces) { %>
             <div class="progress progress-striped active">
-              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="<%= Math.round(torrents[i].pieces / torrents[i].dlpieces * 100) %>%" aria-valuemin="0" aria-valuemax="100" style="width: <%= Math.round(torrents[i].pieces / torrents[i].dlpieces * 100) %>%">
-                <span class="sr-only"><%= Math.round(torrents[i].pieces / torrents[i].dlpieces * 100) %>% Complete</span>
+              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="<%= Math.round(currTorrent.pieces / currTorrent.dlpieces * 100) %>%" aria-valuemin="0" aria-valuemax="100" style="width: <%= Math.round(currTorrent.pieces / currTorrent.dlpieces * 100) %>%">
+                <span class="sr-only"><%= Math.round(currTorrent.pieces / currTorrent.dlpieces * 100) %>% Complete</span>
               </div>
             </div>
-            <% } else if(torrents[i].downloadedat) { %>
+            <% } else if(currTorrent.downloadedat) { %>
             <span class="text-primary">Compressing File</span>
-            <% } else if(torrents[i].compressedat) { %>
+            <% } else if(currTorrent.compressedat) { %>
             <span class="text-success">Ready For Download</span>
             <% } else { %>
             <span class="text-muted">In Queue</span>
@@ -189,225 +148,36 @@
         </form>
 
       </li>
-      <li id="torrent-info-1">
-
-        <h2>Super-duper-long-name-for-my-torrent <small>Added 2014/6/12 12:00 PM</small></h2>
-
-        <fieldset><legend>Files <small class="text-muted">5</small></legend>
-          <pre class="torrent-info-file-list">
-README.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KBREADME.md  --  5KB
-Fake-file.mov  --  100KB
-totally-real-handbook.pdf  --  1KB
-fakefilescover.png  --  1KB
-readme.html  --  5KB</pre>
-        </fieldset>
-
-        <fieldset><legend>Download <small class="text-muted">Ready For Download</small></legend>
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Progress</dt>
-            <dd>100%</dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Ratio</dt>
-            <dd>1.0</dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Downloaded</dt>
-            <dd>112KB</dd>
-            <dt>Avg. Download Speed</dt>
-            <dd>2MB/s</dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Uploaded</dt>
-            <dd>112KB</dd>
-            <dt>Avg. Upload Speed</dt>
-            <dd>2MB/s</dd>
-          </dl>
-
-          <dl class="col-xs-12 dl-horizontal text-monospaced">
-            <dt>Connections</dt>
-            <dd>100</dd>
-
-            <dt>Info Hash</dt>
-            <dd>1196D87E533C9BB87927550A02A04BFF1E9DCE60</dd>
-          </dl>
-
-          <dl class="col-xs-12 dl-horizontal text-monospaced">
-            <dt>Finished Download</dt>
-            <dd>2014/5/12 12:00 PM</dd>
-            <dt>Finished Compressing</dt>
-            <dd>2014/5/12 12:00 PM</dd>
-          </dl>
-        </fieldset>
-
-        <fieldset><legend></legend>
-          <button onClick="javascript:doDelete(1);" type="button" class="btn btn-danger btn-lg btn-block">Delete Torrent</button>
-        </fieldset>
-      </li>
-      <li id="torrent-info-2">
-
-        <h2>Super-duper-long-name-for-my-torrent <small>Added 2014/6/12</small></h2>
-
-        <fieldset><legend>Files <small class="text-muted">5</small></legend>
-          <pre class="torrent-info-file-list">
-README.md  --  5KB
-Fake-file.mov  --  100KB
-totally-real-handbook.pdf  --  1KB
-fakefilescover.png  --  1KB
-readme.html  --  5KB</pre>
-        </fieldset>
-
-        <fieldset><legend>Download <small class="text-muted">Compressing (Zipping) File</small></legend>
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Progress</dt>
-            <dd>100%</dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Ratio</dt>
-            <dd>1.0</dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Downloaded</dt>
-            <dd>112KB</dd>
-            <dt>Avg. Download Speed</dt>
-            <dd>2MB/s</dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Uploaded</dt>
-            <dd>112KB</dd>
-            <dt>Avg. Upload Speed</dt>
-            <dd>2MB/s</dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Connections</dt>
-            <dd>100</dd>
-          </dl>
-        </fieldset>
-
-        <fieldset><legend></legend>
-          <button onClick="javascript:doDelete(2);" type="button" class="btn btn-danger btn-lg btn-block">Delete Torrent</button>
-        </fieldset>
-      </li>
-      <li id="torrent-info-3">
-
-        <h2>Super-duper-long-name-for-my-torrent <small>Added 2014/6/12</small></h2>
-
-        <fieldset><legend>Files <small class="text-muted">5</small></legend>
-          <pre class="torrent-info-file-list">
-README.md  --  5KB
-Fake-file.mov  --  100KB
-totally-real-handbook.pdf  --  1KB
-fakefilescover.png  --  1KB
-readme.html  --  5KB</pre>
-        </fieldset>
-
-        <fieldset><legend>Download <small class="text-muted">40%</small></legend>
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Progress</dt>
-            <dd>40%</dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Ratio</dt>
-            <dd>1.0</dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Downloaded</dt>
-            <dd>112KB</dd>
-            <dt>Avg. Download Speed</dt>
-            <dd>2MB/s</dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Uploaded</dt>
-            <dd>112KB</dd>
-            <dt>Avg. Upload Speed</dt>
-            <dd>2MB/s</dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Connections</dt>
-            <dd>100</dd>
-          </dl>
-        </fieldset>
-
-        <fieldset><legend></legend>
-          <button onClick="javascript:doDelete(3);" type="button" class="btn btn-danger btn-lg btn-block">Delete Torrent</button>
-        </fieldset>
-      </li>
-      <li id="torrent-info-4">
-
-        <h2>Super-duper-long-name-for-my-torrent <small>Added 2014/6/12</small></h2>
-
-        <fieldset><legend>Files <small class="text-muted">5</small></legend>
-          <pre class="torrent-info-file-list">
-README.md  --  5KB
-Fake-file.mov  --  100KB
-totally-real-handbook.pdf  --  1KB
-fakefilescover.png  --  1KB
-readme.html  --  5KB</pre>
-        </fieldset>
-
-        <fieldset><legend>Download <small class="text-muted">In Queue</small></legend>
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Progress</dt>
-            <dd>In Queue</dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Ratio</dt>
-            <dd>&infin;</dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Downloaded</dt>
-            <dd>&infin;</dd>
-            <dt>Avg. Download Speed</dt>
-            <dd>&infin;</dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Uploaded</dt>
-            <dd>&infin;</dd>
-            <dt>Avg. Upload Speed</dt>
-            <dd>&infin;</dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Connections</dt>
-            <dd>&infin;</dd>
-          </dl>
-        </fieldset>
-
-        <fieldset><legend></legend>
-          <button onClick="javascript:doDelete(4);" type="button" class="btn btn-danger btn-lg btn-block">Delete Torrent</button>
-        </fieldset>
-      </li>
       <% for(var i = 0; i < torrents.length; i++) {
-        torrents[i].parsedFiles = JSON.parse("["+torrents[i].files+"]");
+        var currTorrent = torrents[i];
+        currTorrent.parsedFiles = JSON.parse("["+currTorrent.files+"]");
 
-        var date = new Date(torrents[i].createdat * 1000);
+        var date = new Date(currTorrent.createdat * 1000);
         var daynight = date.getHours() - 11 > 0 ? 'PM' : 'AM';
 
-        torrents[i].parsedFiles = JSON.parse("["+torrents[i].files+"]");
+        if(currTorrent.downloadedat) {
+          var downloadDate = new Date(currTorrent.downloadedat * 1000);
+          var downloadAbb = downloadDate.getHours() - 11 > 0 ? 'PM' : 'AM';
+          var downloadText =  downloadDate.getFullYear() + '/' + ( downloadDate.getMonth()+1) + '/' +  downloadDate.getDate() + ' '+( downloadDate.getHours() - (downloadAbb == 'PM' &&  downloadDate.getHours()-12 > 0 ? 12:0))+':'+ downloadDate.getMinutes()+' '+downloadAbb;
+        }
+
+        if(currTorrent.compressedat) {
+          var compressDate = new Date(currTorrent.compressedat * 1000);
+          var compressAbb = compressDate.getHours() - 11 > 0 ? 'PM' : 'AM';
+          var compressText =  compressDate.getFullYear() + '/' + ( compressDate.getMonth()+1) + '/' +  compressDate.getDate() + ' '+( compressDate.getHours() - (compressAbb == 'PM' &&  compressDate.getHours()-12 > 0 ? 12:0))+':'+ compressDate.getMinutes()+' '+compressAbb;
+        }
+
+        currTorrent.parsedFiles = JSON.parse("["+currTorrent.files+"]");
         %>
 
-      <li id="torrent-info-<%= torrents[i].id + 4 %>">
+      <li id="torrent-info-<%= currTorrent.id %>">
 
-        <h2>#<%= torrents[i].id + 4 %> <%= torrents[i].name %> <small>Added <%= date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate() + ' '+(date.getHours() - (daynight == 'PM' && date.getHours()-12 > 0 ? 12:0))+':'+date.getMinutes()+' '+daynight %></small></h2>
+        <h2>#<%= currTorrent.id %> <%= currTorrent.name %> <small>Added <%= date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate() + ' '+(date.getHours() - (daynight == 'PM' && date.getHours()-12 > 0 ? 12:0))+':'+date.getMinutes()+' '+daynight %></small></h2>
 
-        <fieldset><legend>Files <small class="text-muted"><%= torrents[i].files ? torrents[i].parsedFiles.length : 0 %></small></legend>
-          <pre class="torrent-info-file-list"><% if(torrents[i].files) {
-            for(var i = 0; i < torrents[i].parsedFiles.length; i++) {%>
-<%= torrents[i].parsedFiles[i].name %>  --  <% torrents[i].parsedFiles[i].size %>
+        <fieldset><legend>Files <small class="text-muted"><%= currTorrent.files ? currTorrent.parsedFiles.length : 0 %></small></legend>
+          <pre class="torrent-info-file-list"><% if(currTorrent.files) {
+            for(var i = 0; i < currTorrent.parsedFiles.length; i++) {%>
+<%= currTorrent.parsedFiles[i].name %>  --  <% currTorrent.parsedFiles[i].size %>
 <% }} %></pre>
         </fieldset>
 
@@ -415,11 +185,11 @@ readme.html  --  5KB</pre>
           <dl class="col-xs-6 dl-horizontal text-monospaced">
             <dt>Progress</dt>
             <dd>
-              <% if(torrents[i].pieces) { %>
-              <span><%= Math.round(torrents[i].pieces / torrents[i].dlpieces * 100) %>%</span>
-              <% } else if(torrents[i].downloadedat) { %>
+              <% if(currTorrent.pieces) { %>
+              <span><%= Math.round(currTorrent.pieces / currTorrent.dlpieces * 100) %>%</span>
+              <% } else if(currTorrent.downloadedat) { %>
               <span class="text-primary">Compressing File</span>
-              <% } else if(torrents[i].compressedat) { %>
+              <% } else if(currTorrent.compressedat) { %>
               <span class="text-success">Ready For Download</span>
               <% } else { %>
               <span class="text-muted">In Queue</span>
@@ -428,27 +198,37 @@ readme.html  --  5KB</pre>
           </dl>
 
           <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Ratio</dt>
-            <dd>&infin;</dd>
+            <dt>Ratio (dl/up)</dt>
+            <dd><%= currTorrent.dlsize && currTorrent.upsize ? (currTorrent.dlsize/currTorrent.upsize).toFixed(4) : '&infin;' %></dd>
           </dl>
 
           <dl class="col-xs-6 dl-horizontal text-monospaced">
             <dt>Downloaded</dt>
-            <dd>&infin;</dd>
+            <dd><%= currTorrent.dlsize ? getSimpleByte(currTorrent.dlsize) : '&infin;' %></dd>
             <dt>Avg. Download Speed</dt>
-            <dd>&infin;</dd>
+            <dd><%= currTorrent.dlspeed ? getSimpleByte(currTorrent.dlspeed) : '&infin;' %></dd>
           </dl>
 
           <dl class="col-xs-6 dl-horizontal text-monospaced">
             <dt>Uploaded</dt>
-            <dd>&infin;</dd>
+            <dd><%= currTorrent.upsize ? getSimpleByte(currTorrent.upsize) : '&infin;' %></dd>
             <dt>Avg. Upload Speed</dt>
-            <dd>&infin;</dd>
+            <dd><%= currTorrent.upspeed ? getSimpleByte(currTorrent.upspeed) : '&infin;' %></dd>
           </dl>
 
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
+          <dl class="col-xs-12 dl-horizontal text-monospaced">
             <dt>Connections</dt>
-            <dd>&infin;</dd>
+            <dd>100</dd>
+
+            <dt>Info Hash</dt>
+            <dd><%= currTorrent.hash %></dd>
+          </dl>
+
+          <dl class="col-xs-12 dl-horizontal text-monospaced">
+            <dt>Finished Download</dt>
+            <dd><%= currTorrent.downloadedat ? downloadText : '- - -' %></dd>
+            <dt>Finished Compressing</dt>
+            <dd><%= currTorrent.compressedat ? compressText : '- - -' %></dd>
           </dl>
         </fieldset>
 
