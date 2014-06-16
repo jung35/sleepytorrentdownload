@@ -411,10 +411,20 @@ readme.html  --  5KB</pre>
 <% }} %></pre>
         </fieldset>
 
-        <fieldset><legend>Download <small class="text-muted">In Queue</small></legend>
+        <fieldset><legend>Download</legend>
           <dl class="col-xs-6 dl-horizontal text-monospaced">
             <dt>Progress</dt>
-            <dd>In Queue</dd>
+            <dd>
+              <% if(torrents[i].pieces) { %>
+              <span><%= Math.round(torrents[i].pieces / torrents[i].dlpieces * 100) %>%</span>
+              <% } else if(torrents[i].downloadedat) { %>
+              <span class="text-primary">Compressing File</span>
+              <% } else if(torrents[i].compressedat) { %>
+              <span class="text-success">Ready For Download</span>
+              <% } else { %>
+              <span class="text-muted">In Queue</span>
+              <% } %>
+            </dd>
           </dl>
 
           <dl class="col-xs-6 dl-horizontal text-monospaced">

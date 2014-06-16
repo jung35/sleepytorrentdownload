@@ -6,8 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mysql = require('mysql');
 
-var routes = require('./routes/index');
-
 var app = express();
 
 app.mysql = mysql.createConnection({
