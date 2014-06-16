@@ -395,7 +395,6 @@ readme.html  --  5KB</pre>
         torrents[i].parsedFiles = JSON.parse("["+torrents[i].files+"]");
 
         var date = new Date(torrents[i].createdat * 1000);
-        console.log(date);
         var daynight = date.getHours() - 11 > 0 ? 'PM' : 'AM';
 
         torrents[i].parsedFiles = JSON.parse("["+torrents[i].files+"]");

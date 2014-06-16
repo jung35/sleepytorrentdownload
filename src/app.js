@@ -4,11 +4,18 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mysql = require('mysql');
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
 
 var app = express();
+
+app.mysql = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'root',
+  password : '',
+  database : 'sleepytorrentdownload'
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -21,7 +28,21 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
+/* GET home page. */
+app.get('/', function(req, res) {
+
+  app.mysql.query('SELECT t.*, \
+    (SELECT GROUP_CONCAT(CONCAT(\'{"name":"\', f.filename, \'", "size":"\',f.filesize,\'"}\')) \
+      FROM files f WHERE t.id = f.torrentid) AS files \
+  FROM torrent t \
+  WHERE t.deletedat IS NULL', function(err, results) {
+    if(!err) {
+      res.render('index', { torrents: results });
+    } else {
+      console.log(err);
+    }
+  });
+});
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
