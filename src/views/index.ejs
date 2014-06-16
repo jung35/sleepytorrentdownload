@@ -52,7 +52,7 @@ function getSimpleByte(num) {
       <ul class="nav navbar-nav">
         <li><a class="addNewTorrent"><span class="glyphicon glyphicon-plus"></span> Add New Torrents</a></li>
       </ul>
-      <p class="navbar-text">Server Time: 2:50PM</p>
+      <p class="navbar-text">Server Time: <% var serverDate = new Date(); %><%= serverDate.getHours() +':'+ (serverDate.getMinutes() < 10 ? '0'+serverDate.getMinutes() : serverDate.getMinutes()) + (serverDate.getHours() > 11 ? 'PM' : ' AM')%></p>
       <ul class="nav navbar-nav navbar-right">
       </ul>
     </div>
@@ -153,18 +153,18 @@ function getSimpleByte(num) {
         currTorrent.parsedFiles = JSON.parse("["+currTorrent.files+"]");
 
         var date = new Date(currTorrent.createdat * 1000);
-        var daynight = date.getHours() - 11 > 0 ? 'PM' : 'AM';
+        var daynight = date.getHours() > 11 ? 'PM' : 'AM';
 
         if(currTorrent.downloadedat) {
           var downloadDate = new Date(currTorrent.downloadedat * 1000);
-          var downloadAbb = downloadDate.getHours() - 11 > 0 ? 'PM' : 'AM';
-          var downloadText =  downloadDate.getFullYear() + '/' + ( downloadDate.getMonth()+1) + '/' +  downloadDate.getDate() + ' '+( downloadDate.getHours() - (downloadAbb == 'PM' &&  downloadDate.getHours()-12 > 0 ? 12:0))+':'+ downloadDate.getMinutes()+' '+downloadAbb;
+          var downloadAbb = downloadDate.getHours() > 11 ? 'PM' : 'AM';
+          var downloadText =  downloadDate.getFullYear() + '/' + ( downloadDate.getMonth()+1) + '/' +  downloadDate.getDate() + ' '+( downloadDate.getHours() - (downloadAbb == 'PM' &&  downloadDate.getHours()-12 > 0 ? 12:0))+':'+ (downloadDate.getMinutes() < 10 ? '0'+downloadDate.getMinutes() : downloadDate.getMinutes()) +' '+downloadAbb;
         }
 
         if(currTorrent.compressedat) {
           var compressDate = new Date(currTorrent.compressedat * 1000);
-          var compressAbb = compressDate.getHours() - 11 > 0 ? 'PM' : 'AM';
-          var compressText =  compressDate.getFullYear() + '/' + ( compressDate.getMonth()+1) + '/' +  compressDate.getDate() + ' '+( compressDate.getHours() - (compressAbb == 'PM' &&  compressDate.getHours()-12 > 0 ? 12:0))+':'+ compressDate.getMinutes()+' '+compressAbb;
+          var compressAbb = compressDate.getHours() > 11 ? 'PM' : 'AM';
+          var compressText =  compressDate.getFullYear() + '/' + ( compressDate.getMonth()+1) + '/' +  compressDate.getDate() + ' '+( compressDate.getHours() - (compressAbb == 'PM' &&  compressDate.getHours()-12 > 0 ? 12:0))+':'+ (compressDate.getMinutes() < 10 ? '0'+compressDate.getMinutes() : compressDate.getMinutes()) +' '+compressAbb;
         }
 
         currTorrent.parsedFiles = JSON.parse("["+currTorrent.files+"]");
@@ -172,7 +172,7 @@ function getSimpleByte(num) {
 
       <li id="torrent-info-<%= currTorrent.id %>">
 
-        <h2>#<%= currTorrent.id %> <%= currTorrent.name %> <small>Added <%= date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate() + ' '+(date.getHours() - (daynight == 'PM' && date.getHours()-12 > 0 ? 12:0))+':'+date.getMinutes()+' '+daynight %></small></h2>
+        <h2>#<%= currTorrent.id %> <%= currTorrent.name %> <small>Added <%= date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate() + ' '+(date.getHours() - (daynight == 'PM' && date.getHours()-12 > 0 ? 12:0))+':'+ (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes()) +' '+daynight %></small></h2>
 
         <fieldset><legend>Files <small class="text-muted"><%= currTorrent.files ? currTorrent.parsedFiles.length : 0 %></small></legend>
           <pre class="torrent-info-file-list"><% if(currTorrent.files) {
