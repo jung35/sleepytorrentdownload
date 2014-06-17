@@ -233,7 +233,7 @@ function getSimpleByte(num) {
         </fieldset>
 
         <fieldset><legend></legend>
-          <button onClick="javascript:doDelete(4);" type="button" class="btn btn-danger btn-lg btn-block">Delete Torrent</button>
+          <button onClick="javascript:doDelete(<%= currTorrent.id %>);" type="button" class="btn btn-danger btn-lg btn-block">Delete Torrent</button>
         </fieldset>
       </li>
       <% } %>

@@ -71,30 +71,6 @@ function clearTorrents() {
   $('.torrent-add-option').before(optionsFormat);
 }
 
-function doDelete(id) {
-  var errorMessage = 'Error: Expected JSON';
-
-  $.ajax({
-    type: 'POST',
-    url: '/',
-    data: { id: id },
-    dataType: 'json'
-  })
-    .done(function(data) {
-      if(data.success) {
-        $('#torrent-info-'+id).remove();
-        $('#torrent-view-'+id).remove();
-      } else {
-        $('#alertBox').find('.modal-body').html(errorMessage + ' (doDelete#done)');
-        $('#alertBox').modal('show');
-      }
-    })
-    .error(function() {
-      $('#alertBox').find('.modal-body').html(errorMessage + ' (doDelete#error)');
-      $('#alertBox').modal('show');
-    });
-}
-
 function getSimpleByte(num) {
   if(num > 1073741824) {
     num = parseFloat(num / 1073741824.0).toFixed(2) + ' GB';
@@ -217,4 +193,20 @@ socket.on('newTorrent', function(torrent) {
 
   $torrentList.append(listFormat);
   $torrentInfo.append(infoFormat);
+});
+
+function doDelete(id) {
+  socket.emit('delTorrent', id, function(err) {
+    if(err) {
+      $('#alertBox').find('.modal-body').html('<b>Error Deleting Torrent</b>');
+      $('#alertBox').modal('show');
+    }
+  });
+}
+
+socket.on('delTorrent', function(id) {
+
+  $('#torrent-view-'+id).remove();
+  $('#torrent-info-'+id).remove();
+
 });

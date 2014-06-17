@@ -74,6 +74,29 @@ io.on('connection', function(socket) {
       cb(errorFiles);
     }
   });
+
+
+  socket.on('delTorrent', function(id, cb) {
+
+    console.log('deleting #'+id);
+
+    app.mysql.query('DELETE FROM torrent WHERE id = ?', id, function(err, result) {
+      if(err) {
+        cosole.log(err);
+        cb(err);
+      } else {
+        app.mysql.query('DELETE FROM files WHERE torrentid = ?', id, function(err, result) {
+          if(err) {
+            cosole.log(err);
+            cb(err);
+          } else {
+            console.log('successfully deleted #'+id);
+            io.emit('delTorrent', id);
+          }
+        });
+      }
+    });
+  });
 });
 
 /*
