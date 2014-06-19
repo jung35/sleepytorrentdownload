@@ -98,8 +98,8 @@ function getSimpleByte(num) {
           <div class="col-sm-12 torrent-list-progress">
             <% if(currTorrent.pieces) { %>
             <div class="progress progress-striped active">
-              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="<%= Math.round(currTorrent.pieces / currTorrent.dlpieces * 100) %>%" aria-valuemin="0" aria-valuemax="100" style="width: <%= Math.round(currTorrent.pieces / currTorrent.dlpieces * 100) %>%">
-                <span class="sr-only"><%= Math.round(currTorrent.pieces / currTorrent.dlpieces * 100) %>% Complete</span>
+              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="<%= Math.round(currTorrent.dlpieces / currTorrent.pieces * 100) %>%" aria-valuemin="0" aria-valuemax="100" style="width: <%= Math.round(currTorrent.dlpieces / currTorrent.pieces * 100) %>%">
+                <span class="sr-only"><%= Math.round(currTorrent.dlpieces / currTorrent.pieces * 100) %>% Complete</span>
               </div>
             </div>
             <% } else if(currTorrent.downloadedat) { %>
