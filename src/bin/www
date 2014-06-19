@@ -26,11 +26,14 @@ io.on('connection', function(socket) {
       try {
         var engine = torrentStream(torrent.magnet, opt);
         var torrentInfo = {
+          id: 0,
           name: torrent.name,
+          hash: null,
           time: (+new Date),
           files: []
         };
         engine.on('ready', function() {
+          torrentInfo.hash = engine.torrent.infoHash.toUpperCase();
           app.mysql.query('INSERT INTO torrent SET ?',
             {
 
@@ -43,26 +46,37 @@ io.on('connection', function(socket) {
             }, function(err, result) {
               if (err) throw err;
 
+              console.log(result)
+
+              var torrentFiles = [];
+              var torrentpath;
+
+              torrentInfo.id = result.insertId;
+
               engine.files.forEach(function(file) {
-                app.mysql.query('INSERT INTO files SET ?',
-                  {
-                    torrentid: result.insertId,
-                    filename: file.path,
-                    filesize: file.length
-                  }, function(err, result) {
-                    if (err) throw err;
-                  });
+                torrentpath = file.path.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/\\/g, "/");
+                torrentFiles.push([
+                  result.insertId,
+                  torrentpath,
+                  file.length
+                ]);
 
                 torrentInfo.files.push({
                   path: file.path,
                   size: file.length
                 });
               });
+
+              console.log(torrentFiles);
+
+              app.mysql.query('INSERT INTO `files` (`torrentid`, `filename`, `filesize`) VALUES ?', [torrentFiles], function(err, result) {
+                if (err) throw err;
+
+                console.log('newTorrent', torrentInfo);
+                io.emit('newTorrent', torrentInfo);
+              });
             }
           );
-          console.log('newTorrent', torrentInfo);
-          io.emit('newTorrent', torrentInfo);
-
         });
       } catch(err) {
         errorFiles.push(torrent.name);

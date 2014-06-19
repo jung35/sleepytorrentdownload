@@ -129,6 +129,15 @@ html, body {
 
 .torrent-info-file-list {
   word-wrap: normal;
+  cursor: pointer;
+}
+
+.torrent-info-file-list .file-list-toggle {
+  color: #999;
+}
+
+.torrent-info-file-list:hover .file-list-toggle {
+  color: #333;
 }
 
 .torrent-add {

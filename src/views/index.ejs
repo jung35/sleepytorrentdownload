@@ -77,13 +77,13 @@ function getSimpleByte(num) {
 
   <div class="torrent-viewer">
     <ul class="col-lg-4 col-md-4 col-sm-5 torrent-list">
-      <% for(var i = 0; i < torrents.length; i++) {
+      <%
+      for(var i = 0; i < torrents.length; i++) {
         var currTorrent = torrents[i];
-        currTorrent.parsedFiles = JSON.parse("["+currTorrent.files+"]");
 
         var sumFiles = 0;
-        for(var x = 0; x < currTorrent.parsedFiles.length; x++) {
-
+        for(var x = 0; x < currTorrent.f_filename.length; x++) {
+          sumFiles += parseInt(currTorrent.f_filesize[x]);
         }
         %>
       <li id="torrent-view-<%= currTorrent.id %>">
@@ -91,8 +91,8 @@ function getSimpleByte(num) {
           <div class="col-sm-12 torrent-list-name">#<%= currTorrent.id %> <%= currTorrent.name %></div>
         </div>
         <div class="row text-muted">
-          <div class="col-sm-6 torrent-list-files">Files: <%= currTorrent.files ? currTorrent.parsedFiles.length : 0 %></div>
-          <div class="col-sm-6 torrent-list-size">Estimated Size: </div>
+          <div class="col-sm-6 torrent-list-files">Files: <span><%= currTorrent.f_filename ? currTorrent.f_filename.length : 0 %></span></div>
+          <div class="col-sm-6 torrent-list-size">Estimated Size: <%= getSimpleByte(sumFiles) %></div>
         </div>
         <div class="row">
           <div class="col-sm-12 torrent-list-progress">
@@ -149,93 +149,8 @@ function getSimpleByte(num) {
 
       </li>
       <% for(var i = 0; i < torrents.length; i++) {
-        var currTorrent = torrents[i];
-        currTorrent.parsedFiles = JSON.parse("["+currTorrent.files+"]");
-
-        var date = new Date(currTorrent.createdat * 1000);
-        var daynight = date.getHours() > 11 ? 'PM' : 'AM';
-
-        if(currTorrent.downloadedat) {
-          var downloadDate = new Date(currTorrent.downloadedat * 1000);
-          var downloadAbb = downloadDate.getHours() > 11 ? 'PM' : 'AM';
-          var downloadText =  downloadDate.getFullYear() + '/' + ( downloadDate.getMonth()+1) + '/' +  downloadDate.getDate() + ' '+( downloadDate.getHours() - (downloadAbb == 'PM' &&  downloadDate.getHours()-12 > 0 ? 12:0))+':'+ (downloadDate.getMinutes() < 10 ? '0'+downloadDate.getMinutes() : downloadDate.getMinutes()) +' '+downloadAbb;
-        }
-
-        if(currTorrent.compressedat) {
-          var compressDate = new Date(currTorrent.compressedat * 1000);
-          var compressAbb = compressDate.getHours() > 11 ? 'PM' : 'AM';
-          var compressText =  compressDate.getFullYear() + '/' + ( compressDate.getMonth()+1) + '/' +  compressDate.getDate() + ' '+( compressDate.getHours() - (compressAbb == 'PM' &&  compressDate.getHours()-12 > 0 ? 12:0))+':'+ (compressDate.getMinutes() < 10 ? '0'+compressDate.getMinutes() : compressDate.getMinutes()) +' '+compressAbb;
-        }
-
-        currTorrent.parsedFiles = JSON.parse("["+currTorrent.files+"]");
-        %>
-
-      <li id="torrent-info-<%= currTorrent.id %>">
-
-        <h2>#<%= currTorrent.id %> <%= currTorrent.name %> <small>Added <%= date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate() + ' '+(date.getHours() - (daynight == 'PM' && date.getHours()-12 > 0 ? 12:0))+':'+ (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes()) +' '+daynight %></small></h2>
-
-        <fieldset><legend>Files <small class="text-muted"><%= currTorrent.files ? currTorrent.parsedFiles.length : 0 %></small></legend>
-          <pre class="torrent-info-file-list"><% if(currTorrent.files) {
-            for(var i = 0; i < currTorrent.parsedFiles.length; i++) {%>
-<%= currTorrent.parsedFiles[i].name %>  --  <% currTorrent.parsedFiles[i].size %>
-<% }} %></pre>
-        </fieldset>
-
-        <fieldset><legend>Download</legend>
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Progress</dt>
-            <dd>
-              <% if(currTorrent.pieces) { %>
-              <span><%= Math.round(currTorrent.pieces / currTorrent.dlpieces * 100) %>%</span>
-              <% } else if(currTorrent.downloadedat) { %>
-              <span class="text-primary">Compressing File</span>
-              <% } else if(currTorrent.compressedat) { %>
-              <span class="text-success">Ready For Download</span>
-              <% } else { %>
-              <span class="text-muted">In Queue</span>
-              <% } %>
-            </dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Ratio (dl/up)</dt>
-            <dd><%= currTorrent.dlsize && currTorrent.upsize ? (currTorrent.dlsize/currTorrent.upsize).toFixed(4) : '&infin;' %></dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Downloaded</dt>
-            <dd><%= currTorrent.dlsize ? getSimpleByte(currTorrent.dlsize) : '&infin;' %></dd>
-            <dt>Avg. Download Speed</dt>
-            <dd><%= currTorrent.dlspeed ? getSimpleByte(currTorrent.dlspeed) : '&infin;' %></dd>
-          </dl>
-
-          <dl class="col-xs-6 dl-horizontal text-monospaced">
-            <dt>Uploaded</dt>
-            <dd><%= currTorrent.upsize ? getSimpleByte(currTorrent.upsize) : '&infin;' %></dd>
-            <dt>Avg. Upload Speed</dt>
-            <dd><%= currTorrent.upspeed ? getSimpleByte(currTorrent.upspeed) : '&infin;' %></dd>
-          </dl>
-
-          <dl class="col-xs-12 dl-horizontal text-monospaced">
-            <dt>Connections</dt>
-            <dd>100</dd>
-
-            <dt>Info Hash</dt>
-            <dd><%= currTorrent.hash %></dd>
-          </dl>
-
-          <dl class="col-xs-12 dl-horizontal text-monospaced">
-            <dt>Finished Download</dt>
-            <dd><%= currTorrent.downloadedat ? downloadText : '- - -' %></dd>
-            <dt>Finished Compressing</dt>
-            <dd><%= currTorrent.compressedat ? compressText : '- - -' %></dd>
-          </dl>
-        </fieldset>
-
-        <fieldset><legend></legend>
-          <button onClick="javascript:doDelete(<%= currTorrent.id %>);" type="button" class="btn btn-danger btn-lg btn-block">Delete Torrent</button>
-        </fieldset>
-      </li>
+        var currTorrent = torrents[i];%>
+        <% include info %>
       <% } %>
     </ul>
   </div>

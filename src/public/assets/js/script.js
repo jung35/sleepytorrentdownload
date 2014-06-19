@@ -126,7 +126,6 @@ $('form.torrent-add-form').submit(function() {
 var $torrentList = $('.torrent-list'),
     $torrentInfo = $('.torrent-info');
 socket.on('newTorrent', function(torrent) {
-  var torrentCount = $('.torrent-list li').size()+1;
   var date = new Date(torrent.time);
   var daynight = date.getHours() - 11 > 0 ? 'PM' : 'AM';
 
@@ -140,9 +139,9 @@ socket.on('newTorrent', function(torrent) {
 
   sum = getSimpleByte(sum);
 
-  var listFormat = '<li id="torrent-view-'+torrentCount+'"> \
+  var listFormat = '<li id="torrent-view-'+torrent.id+'"> \
   <div class="row"> \
-    <div class="col-sm-12 torrent-list-name">#'+torrentCount+' '+torrent.name+'</div> \
+    <div class="col-sm-12 torrent-list-name">#'+torrent.id+' '+torrent.name+'</div> \
   </div> \
   <div class="row text-muted"> \
     <div class="col-sm-6 torrent-list-files">Files: '+torrent.files.length+'</div> \
@@ -155,18 +154,18 @@ socket.on('newTorrent', function(torrent) {
   </div> \
 </li>';
 
-  var infoFormat = '<li id="torrent-info-'+torrentCount+'"> \
-  <h2>'+ torrent.name +' <small>Added ' + date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate() + ' '+(date.getHours() - (daynight == 'PM' && date.getHours()-12 > 0 ? 12:0))+':'+date.getMinutes()+' '+daynight+'</small></h2> \
+  var infoFormat = '<li id="torrent-info-'+torrent.id+'"> \
+  <h2>#'+torrent.id+' '+ torrent.name +' <small>Added ' + date.getFullYear() + '/' + (date.getMonth()+1) + '/' + date.getDate() + ' '+(date.getHours() - (daynight == 'PM' && date.getHours()-12 > 0 ? 12:0))+':'+date.getMinutes()+' '+daynight+'</small></h2> \
   <fieldset><legend>Files <small class="text-muted">'+torrent.files.length+'</small></legend> \
     <pre>'+fileNames+'</pre> \
   </fieldset> \
-  <fieldset><legend>Download <small class="text-muted">In Queue</small></legend> \
+  <fieldset><legend>Download</legend> \
     <dl class="col-xs-6 dl-horizontal text-monospaced"> \
       <dt>Progress</dt> \
       <dd>In Queue</dd> \
     </dl> \
     <dl class="col-xs-6 dl-horizontal text-monospaced"> \
-      <dt>Ratio</dt> \
+      <dt>Ratio (dl/up)</dt> \
       <dd>&infin;</dd> \
     </dl> \
     <dl class="col-xs-6 dl-horizontal text-monospaced"> \
@@ -182,8 +181,14 @@ socket.on('newTorrent', function(torrent) {
       <dd>&infin;</dd> \
     </dl> \
     <dl class="col-xs-6 dl-horizontal text-monospaced"> \
-      <dt>Connections</dt> \
-      <dd>&infin;</dd> \
+      <dt>Info Hash</dt> \
+      <dd>'+torrent.hash+'</dd> \
+    </dl> \
+    <dl class="col-xs-12 dl-horizontal text-monospaced"> \
+      <dt>Finished Download</dt> \
+      <dd>- - -</dd> \
+      <dt>Finished Compressing</dt> \
+      <dd>- - -</dd> \
     </dl> \
   </fieldset> \
   <fieldset><legend></legend> \
@@ -209,4 +214,12 @@ socket.on('delTorrent', function(id) {
   $('#torrent-view-'+id).remove();
   $('#torrent-info-'+id).remove();
 
+});
+
+$('.torrent-info-file-list').on('click', function() {
+  $(this).find('.file-list-pre').slideToggle('slow');
+});
+
+$(function() {
+  $('.file-list-pre').hide('fast');
 });

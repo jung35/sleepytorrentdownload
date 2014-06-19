@@ -29,13 +29,31 @@ app.use(express.static(path.join(__dirname, 'public')));
 /* GET home page. */
 app.get('/', function(req, res) {
 
-  app.mysql.query('SELECT t.*, \
-    (SELECT GROUP_CONCAT(CONCAT(\'{"name":"\', f.filename, \'", "size":"\',f.filesize,\'"}\')) \
-      FROM files f WHERE t.id = f.torrentid) AS files \
+  app.mysql.query('SELECT t.*, f.filename AS f_filename, f.filesize AS f_filesize \
   FROM torrent t \
-  WHERE t.deletedat IS NULL', function(err, results) {
+  LEFT JOIN files f \
+    ON f.torrentid = t.id \
+  WHERE t.deletedat IS NULL \
+  ORDER BY f.filename', function(err, results) {
     if(!err) {
-      res.render('index', { torrents: results });
+      var currentid = 0;
+      var torrents = [];
+      var lastindex = -1;
+      for(var i = 0; i < results.length; i++) {
+        var current = results[i];
+        if(currentid != current.id) {
+          currentid = current.id;
+          current.f_filename = [current.f_filename];
+          current.f_filesize = [current.f_filesize];
+          torrents.push(current);
+          lastindex++;
+        } else {
+          torrents[lastindex].f_filename.push(current.f_filename);
+          torrents[lastindex].f_filesize.push(current.f_filesize);
+        }
+
+      }
+      res.render('index', { torrents: torrents });
     } else {
       console.log(err);
     }
