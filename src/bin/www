@@ -4,17 +4,13 @@ var app = require('../app');
 var torrentStream = require('torrent-stream');
 var async = require('async');
 var cache = require('memory-cache');
+var engine;
 
 app.set('port', process.env.PORT || 3000);
 
 var server = app.listen(app.get('port'), function() {
   debug('Express server listening on port ' + server.address().port);
 });
-
-var opt = {
-  tmp: 'C:/wamp/www/sleepytorrentdownload/src',
-  path: 'C:/wamp/www/sleepytorrentdownload/src/download',
-};
 
 var io = require('socket.io').listen(server);
 
@@ -113,22 +109,75 @@ io.on('connection', function(socket) {
   });
 });
 
-/*
-var engine = torrentStream(torrent.magnet, opt);
-var torrentInfo = {
-  name: torrent.name,
-  time: (+new Date),
-  files: []
-};
+// Update Cache
+app.mysql.query('SELECT * \
+  FROM torrent \
+  WHERE deletedat IS NULL \
+  AND downloadedat IS NULL \
+  AND compressedat IS NULL',
+  function(err, results) {
+    var cacheName = 'tPiece';
+    var result;
+    var getCache = cache.get(cacheName) || {};
 
-engine.on('ready', function() {
-  engine.files.forEach(function(file) {
-    torrentInfo.files.push({
-      path: file.path,
-      size: file.length
+    for(var i = 0; i < results.length; i++) {
+      result = results[i];
+      if(!getCache[result.id] || getCache[result.id] < result.dlpieces) {
+        getCache[result.id] = result.dlpieces;
+      }
+    }
+    cache.put(cacheName, getCache);
+    startTorrenting(results[0].magnet, results[0].id);
+  }
+);
+
+/*
+function startTorrenting(torrent, torrentid) {
+
+  var opt = {
+    tmp: 'C:/wamp/www/sleepytorrentdownload/src',
+    path: 'C:/wamp/www/sleepytorrentdownload/src/download',
+  };
+
+  engine = torrentStream(torrent, opt);
+
+  engine.on('ready', function() {
+    engine.files.forEach(function(file) {
+      file.createReadStream();
     });
   });
-  console.log('newTorrent Info', torrentInfo);
-  io.emit('newTorrent', torrentInfo);
-});
+
+  async.whilst(function () {
+    return true;
+  },
+  function (callback) {
+    currDownSize = engine.swarm.downloaded;
+    currDownSpeed = engine.swarm.downloadSpeed();
+
+    currUpSize = engine.swarm.uploaded;
+    currUpSpeed = engine.swarm.uploadSpeed();
+
+    if(lastPiece != currPiece) {
+      lastPiece = currPiece;
+      console.log('\033[2J');
+      engine.files.forEach(function(file) {
+        console.log('file:', file.path);
+      });
+      console.log("Piece", pieceCount, "/", numPiece);
+
+      console.log("Download Size", currDownSize, "Speed", currDownSpeed);
+      console.log("Upload Size", currUpSize, "Speed", currUpSpeed);
+      console.log(engine.torrent.pieceLength);
+    }
+
+    if(pieceCount >= numPiece) {
+      engine.destroy();
+      process.exit();
+    }
+    setTimeout(callback, 5000);
+  },
+  function (err) {
+        // 5 seconds have passed
+  });
+}
 */
