@@ -28,7 +28,6 @@ if(currTorrent.compressedat) {
         if(checkFolder.length > 1) {
           for(var folders = 0; folders < checkFolder.length-1; folders++) {
             if(foldernames.length <= 0) {
-              console.log(checkFolder);
               for(var addtabs = 0; addtabs < folders; addtabs++) {
                 switch(addtabs) {
                   case folders-1:
@@ -87,13 +86,13 @@ if(currTorrent.compressedat) {
   <fieldset><legend>Download</legend>
     <dl class="col-xs-6 dl-horizontal text-monospaced">
       <dt>Progress</dt>
-      <dd>
-        <% if(currTorrent.pieces) { %>
-        <span><%= Math.round(currTorrent.dlpieces / currTorrent.pieces * 100) %>%</span>
+      <dd class="torrent-info-download-progress">
+        <% if(currTorrent.compressedat) { %>
+        <span class="text-success">Ready For Download</span>
         <% } else if(currTorrent.downloadedat) { %>
         <span class="text-primary">Compressing File</span>
-        <% } else if(currTorrent.compressedat) { %>
-        <span class="text-success">Ready For Download</span>
+        <% } else if(currTorrent.pieces) { %>
+        <span><%= Math.round(currTorrent.dlpieces / currTorrent.pieces * 100) %>%</span>
         <% } else { %>
         <span class="text-muted">In Queue</span>
         <% } %>
@@ -102,21 +101,21 @@ if(currTorrent.compressedat) {
 
     <dl class="col-xs-6 dl-horizontal text-monospaced">
       <dt>Ratio (dl/up)</dt>
-      <dd><%= currTorrent.dlsize && currTorrent.upsize ? (currTorrent.dlsize/currTorrent.upsize).toFixed(4) : '&infin;' %></dd>
+      <dd class="torrent-info-ratio"><%= currTorrent.dlsize && currTorrent.upsize ? (currTorrent.dlsize/currTorrent.upsize).toFixed(4) : '&infin;' %></dd>
     </dl>
 
     <dl class="col-xs-6 dl-horizontal text-monospaced">
       <dt>Downloaded</dt>
-      <dd><%= currTorrent.dlsize ? getSimpleByte(currTorrent.dlsize) : '&infin;' %></dd>
+      <dd class="torrent-info-dlsize"><%= currTorrent.dlsize ? getSimpleByte(currTorrent.dlsize) : '&infin;' %></dd>
       <dt>Avg. Download Speed</dt>
-      <dd><%= currTorrent.dlspeed ? getSimpleByte(currTorrent.dlspeed) : '&infin;' %></dd>
+      <dd class="torrent-info-dlspeed"><%= currTorrent.dlspeed ? getSimpleByte(currTorrent.dlspeed) : '&infin;' %></dd>
     </dl>
 
     <dl class="col-xs-6 dl-horizontal text-monospaced">
       <dt>Uploaded</dt>
-      <dd><%= currTorrent.upsize ? getSimpleByte(currTorrent.upsize) : '&infin;' %></dd>
+      <dd class="torrent-info-upsize"><%= currTorrent.upsize ? getSimpleByte(currTorrent.upsize) : '&infin;' %></dd>
       <dt>Avg. Upload Speed</dt>
-      <dd><%= currTorrent.upspeed ? getSimpleByte(currTorrent.upspeed) : '&infin;' %></dd>
+      <dd class="torrent-info-upspeed"><%= currTorrent.upspeed ? getSimpleByte(currTorrent.upspeed) : '&infin;' %></dd>
     </dl>
 
     <dl class="col-xs-12 dl-horizontal text-monospaced">
@@ -126,9 +125,9 @@ if(currTorrent.compressedat) {
 
     <dl class="col-xs-12 dl-horizontal text-monospaced">
       <dt>Finished Download</dt>
-      <dd><%= currTorrent.downloadedat ? downloadText : '- - -' %></dd>
+      <dd class="torrent-info-downloadedat"><%= currTorrent.downloadedat ? downloadText : '- - -' %></dd>
       <dt>Finished Compressing</dt>
-      <dd><%= currTorrent.compressedat ? compressText : '- - -' %></dd>
+      <dd class="torrent-info-compressedat"><%= currTorrent.compressedat ? compressText : '- - -' %></dd>
     </dl>
   </fieldset>
 

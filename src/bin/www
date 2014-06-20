@@ -13,10 +13,10 @@ var server = app.listen(app.get('port'), function() {
 
 var io = require('socket.io').listen(server);
 
-var opt = {
-  tmp: 'C:/wamp/www/sleepytorrentdownload/src',
-  path: 'C:/wamp/www/sleepytorrentdownload/src/download',
-};
+
+var torrentTmp = 'C:/wamp/www/sleepytorrentdownload/src';
+var torrentFilePath = 'C:/wamp/www/sleepytorrentdownload/src/download';
+
 
 io.on('connection', function(socket) {
   socket.on('newTorrent', function(torrents, cb) {
@@ -24,7 +24,7 @@ io.on('connection', function(socket) {
     torrents.forEach(function(torrent) {
       console.log('[TORRENT] Req');
       try {
-        var engine = torrentStream(torrent.magnet, opt);
+        var engine = torrentStream(torrent.magnet, {tmp : torrentTmp});
         var torrentInfo = {
           id: 0,
           name: torrent.name,
@@ -46,8 +46,6 @@ io.on('connection', function(socket) {
             }, function(err, result) {
               if (err) throw err;
 
-              console.log(result)
-
               var torrentFiles = [];
               var torrentpath;
 
@@ -66,8 +64,6 @@ io.on('connection', function(socket) {
                   size: file.length
                 });
               });
-
-              console.log(torrentFiles);
 
               app.mysql.query('INSERT INTO `files` (`torrentid`, `filename`, `filesize`) VALUES ?', [torrentFiles], function(err, result) {
                 if (err) throw err;
@@ -106,10 +102,19 @@ io.on('connection', function(socket) {
           } else {
             console.log('successfully deleted #'+id);
             io.emit('delTorrent', id);
+
+            var currTorrent = cache.get('currentTorrent');
+            if(currTorrent && currTorrent.id == id) {
+              stopDownloading();
+            }
           }
         });
       }
     });
+  });
+
+
+  socket.on('torrentPlayPause', function(cb) {
   });
 });
 
@@ -144,7 +149,8 @@ function startTorrenting(torrent) {
 
   cache.put('currentTorrent', torrent);
 
-  app.engine = torrentStream(torrent.magnet, opt);
+  app.engine = torrentStream(torrent.magnet, {tmp : torrentTmp, path : torrentFilePath+'/#'+torrent.id});
+  app.engine.swarm.resume();
 
   app.engine.on('ready', function() {
     console.log('starting to read files for #'+torrent.id);
@@ -152,8 +158,10 @@ function startTorrenting(torrent) {
       file.createReadStream();
     });
 
+    var prevnum = -1;
+
     async.whilst(function () {
-      return true;
+      return typeof app.engine == 'object';
     },
     function (callback) {
       var currentTorrentId = cache.get('currentTorrent').id;
@@ -177,18 +185,21 @@ function startTorrenting(torrent) {
         upspeed: upspeed,
       };
 
-      app.mysql.query('UPDATE torrent SET ? WHERE id = ?', [updatedInfo, currentTorrentId]);
-      io.emit('torrentProgress', updatedInfo);
-      console.log('#'+currentTorrentId+') Progress : '+dlpieces+' / '+pieces);
+      if(prevnum != dlpieces) {
+        app.mysql.query('UPDATE torrent SET ? WHERE id = ?', [updatedInfo, currentTorrentId]);
+        console.log('#'+currentTorrentId+') Progress : '+dlpieces+' / '+pieces);
+      }
+
+      prevnum = dlpieces;
+      io.emit('torrentProgress', [updatedInfo, currentTorrentId]);
 
       if(dlpieces >= pieces) {
+        app.mysql.query('UPDATE torrent SET downloadedat = ? WHERE id = ?', [Math.round(+new Date / 1000), currentTorrentId]);
         console.log('finished downloading #'+currentTorrentId);
         //preparecompress();
-        app.engine.destroy();
-        app.engine = null;
-        prepareTorrent();
+        stopDownloading();
       } else {
-        setTimeout(callback, 5000);
+        setTimeout(callback, 100);
       }
     },
     function (err) {
@@ -204,8 +215,25 @@ function startTorrenting(torrent) {
   });
 }
 
-function lookForTorrent() {
-
+function stopDownloading() {
+  app.engine.destroy();
+  app.engine = '';
+  cache.del('currentTorrent');
+  lookForTorrent();
 }
 
-prepareTorrent();
+function lookForTorrent() {
+  async.whilst(function () {
+      return typeof app.engine != 'object';
+  },
+  function (callback) {
+    console.log('looking for torrent', typeof app.engine);
+    prepareTorrent();
+    setTimeout(callback, 1000);
+  },
+  function (err) {
+    // console.log(err);
+  });
+}
+
+lookForTorrent();

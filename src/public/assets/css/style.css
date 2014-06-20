@@ -109,7 +109,7 @@ html, body {
 }
 
 .torrent-list-progress .progress {
-  height: 10px;
+  /*height: 10px;*/
   padding: 0;
   margin: 0;
 }

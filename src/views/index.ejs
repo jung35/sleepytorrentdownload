@@ -96,16 +96,16 @@ function getSimpleByte(num) {
         </div>
         <div class="row">
           <div class="col-sm-12 torrent-list-progress">
-            <% if(currTorrent.pieces) { %>
-            <div class="progress progress-striped active">
-              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="<%= Math.round(currTorrent.dlpieces / currTorrent.pieces * 100) %>%" aria-valuemin="0" aria-valuemax="100" style="width: <%= Math.round(currTorrent.dlpieces / currTorrent.pieces * 100) %>%">
-                <span class="sr-only"><%= Math.round(currTorrent.dlpieces / currTorrent.pieces * 100) %>% Complete</span>
-              </div>
-            </div>
+            <% if(currTorrent.compressedat) { %>
+            <span class="text-success">Ready For Download</span>
             <% } else if(currTorrent.downloadedat) { %>
             <span class="text-primary">Compressing File</span>
-            <% } else if(currTorrent.compressedat) { %>
-            <span class="text-success">Ready For Download</span>
+            <% } else if(currTorrent.pieces > 0) { %>
+            <div class="progress progress-striped active">
+              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="<%= Math.round(currTorrent.dlpieces / currTorrent.pieces * 100) %>%" aria-valuemin="0" aria-valuemax="100" style="width: <%= Math.round(currTorrent.dlpieces / currTorrent.pieces * 100) %>%">
+                <span><%= Math.round(currTorrent.dlpieces / currTorrent.pieces * 100) %>% Complete</span>
+              </div>
+            </div>
             <% } else { %>
             <span class="text-muted">In Queue</span>
             <% } %>

@@ -123,6 +123,11 @@ $('form.torrent-add-form').submit(function() {
   return false;
 });
 
+/*****************
+******************
+******************
+******************
+
 var $torrentList = $('.torrent-list'),
     $torrentInfo = $('.torrent-info');
 socket.on('newTorrent', function(torrent) {
@@ -200,6 +205,11 @@ socket.on('newTorrent', function(torrent) {
   $torrentInfo.append(infoFormat);
 });
 
+*************************
+*************************
+*************************
+************************/
+
 function doDelete(id) {
   socket.emit('delTorrent', id, function(err) {
     if(err) {
@@ -222,4 +232,54 @@ $('.torrent-info-file-list').on('click', function() {
 
 $(function() {
   $('.file-list-pre').hide('fast');
+});
+
+socket.on('torrentProgress', function(data) {
+  var updatedInfo = data[0];
+  var currentTorrentId = data[1];
+  var torrentView = $('#torrent-view-'+currentTorrentId).find('.torrent-list-progress');
+  var torrentInfo = $('#torrent-info-'+currentTorrentId);
+  var downloadProgress, atProgress = false;
+
+  if(updatedInfo.downloadedat) {
+    var downloadDate = new Date(updatedInfo.downloadedat * 1000);
+    var downloadAbb = downloadDate.getHours() > 11 ? 'PM' : 'AM';
+    var downloadText =  downloadDate.getFullYear() + '/' + ( downloadDate.getMonth()+1) + '/' +  downloadDate.getDate() + ' '+( downloadDate.getHours() - (downloadAbb == 'PM' &&  downloadDate.getHours()-12 > 0 ? 12:0))+':'+ (downloadDate.getMinutes() < 10 ? '0'+downloadDate.getMinutes() : downloadDate.getMinutes()) +' '+downloadAbb;
+  }
+
+  if(updatedInfo.compressedat) {
+    var compressDate = new Date(updatedInfo.compressedat * 1000);
+    var compressAbb = compressDate.getHours() > 11 ? 'PM' : 'AM';
+    var compressText =  compressDate.getFullYear() + '/' + ( compressDate.getMonth()+1) + '/' +  compressDate.getDate() + ' '+( compressDate.getHours() - (compressAbb == 'PM' &&  compressDate.getHours()-12 > 0 ? 12:0))+':'+ (compressDate.getMinutes() < 10 ? '0'+compressDate.getMinutes() : compressDate.getMinutes()) +' '+compressAbb;
+  }
+
+  if(updatedInfo.compressedat) {
+    downloadProgress = '<span class="text-success">Ready For Download</span>';
+  } else if(updatedInfo.downloadedat) {
+    downloadProgress = '<span class="text-primary">Compressing File</span>';
+  } else if(updatedInfo.pieces > 0) {
+    atProgress = true;
+    downloadProgress = '<div class="progress progress-striped active"> \
+    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="'+ Math.round(updatedInfo.dlpieces / updatedInfo.pieces * 100)+'%" aria-valuemin="0" aria-valuemax="100" style="width: '+ Math.round(updatedInfo.dlpieces / updatedInfo.pieces * 100)+'%"> \
+      <span> '+ Math.round(updatedInfo.dlpieces / updatedInfo.pieces * 100)+'% Complete</span> \
+    </div> \
+  </div>';
+  } else {
+    downloadProgress = '<span class="text-muted">In Queue</span>';
+  }
+
+  torrentView.html(downloadProgress);
+  if(atProgress) {
+    torrentInfo.find('.torrent-info-download-progress').html(Math.round(updatedInfo.dlpieces / updatedInfo.pieces * 100)+'%');
+  } else {
+    torrentInfo.find('.torrent-info-download-progress').html(downloadProgress);
+  }
+
+  torrentInfo.find('.torrent-info-ratio').html(updatedInfo.dlsize && updatedInfo.upsize ? (updatedInfo.dlsize/updatedInfo.upsize).toFixed(4) : '&infin;');
+  torrentInfo.find('.torrent-info-dlsize').html(updatedInfo.dlsize ? getSimpleByte(updatedInfo.dlsize) : '&infin;');
+  torrentInfo.find('.torrent-info-dlspeed').html(updatedInfo.dlspeed ? getSimpleByte(updatedInfo.dlspeed) : '&infin;');
+  torrentInfo.find('.torrent-info-upsize').html(updatedInfo.upsize ? getSimpleByte(updatedInfo.upsize) : '&infin;');
+  torrentInfo.find('.torrent-info-upspeed').html(updatedInfo.upspeed ? getSimpleByte(updatedInfo.upspeed) : '&infin;');
+  torrentInfo.find('.torrent-info-downloadedat').html(updatedInfo.downloadedat ? downloadText : '- - -');
+  torrentInfo.find('.torrent-info-compressedat').html(updatedInfo.compressedat ? compressText : '- - -');
 });
