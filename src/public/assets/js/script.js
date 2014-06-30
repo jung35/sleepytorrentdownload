@@ -283,3 +283,9 @@ socket.on('torrentProgress', function(data) {
   torrentInfo.find('.torrent-info-downloadedat').html(updatedInfo.downloadedat ? downloadText : '- - -');
   torrentInfo.find('.torrent-info-compressedat').html(updatedInfo.compressedat ? compressText : '- - -');
 });
+
+function playpause() {
+  socket.emit('torrentPlayPause', function(err) {
+    console.log(err);
+  });
+}

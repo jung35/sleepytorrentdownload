@@ -17,6 +17,7 @@ var io = require('socket.io').listen(server);
 var torrentTmp = 'C:/wamp/www/sleepytorrentdownload/src';
 var torrentFilePath = 'C:/wamp/www/sleepytorrentdownload/src/download';
 
+var torrentPaused = false;
 
 io.on('connection', function(socket) {
   socket.on('newTorrent', function(torrents, cb) {
@@ -113,8 +114,18 @@ io.on('connection', function(socket) {
     });
   });
 
-
   socket.on('torrentPlayPause', function(cb) {
+    if(typeof app.engine == "object") {
+      if(torrentPaused) {
+        torrentPaused = false;
+        app.engine.destroy();
+        console.log('torrent resume');
+      } else {
+        torrentPaused = true;
+        app.engine.swarm.pause();
+        console.log('torrent paused');
+      }
+    }
   });
 });
 
@@ -150,7 +161,6 @@ function startTorrenting(torrent) {
   cache.put('currentTorrent', torrent);
 
   app.engine = torrentStream(torrent.magnet, {tmp : torrentTmp, path : torrentFilePath+'/#'+torrent.id});
-  app.engine.swarm.resume();
 
   app.engine.on('ready', function() {
     console.log('starting to read files for #'+torrent.id);
