@@ -115,14 +115,15 @@ io.on('connection', function(socket) {
   });
 
   socket.on('torrentPlayPause', function(cb) {
-    if(typeof app.engine == "object") {
-      if(torrentPaused) {
-        torrentPaused = false;
-        app.engine.destroy();
-        console.log('torrent resume');
-      } else {
+    if(torrentPaused) {
+      torrentPaused = false;
+      lookForTorrent();
+      console.log('torrent resume');
+    } else {
+      if(typeof app.engine == "object") {
         torrentPaused = true;
-        app.engine.swarm.pause();
+        app.engine.destroy();
+        app.engine = '';
         console.log('torrent paused');
       }
     }
@@ -195,12 +196,10 @@ function startTorrenting(torrent) {
         upspeed: upspeed,
       };
 
-      if(prevnum != dlpieces) {
-        app.mysql.query('UPDATE torrent SET ? WHERE id = ?', [updatedInfo, currentTorrentId]);
-        console.log('#'+currentTorrentId+') Progress : '+dlpieces+' / '+pieces);
-      }
-
+      app.mysql.query('UPDATE torrent SET ? WHERE id = ?', [updatedInfo, currentTorrentId]);
+      console.log('#'+currentTorrentId+') Progress : '+dlpieces+' / '+pieces, 'Downloaded: ' + dlsize);
       prevnum = dlpieces;
+
       io.emit('torrentProgress', [updatedInfo, currentTorrentId]);
 
       if(dlpieces >= pieces) {
@@ -213,7 +212,7 @@ function startTorrenting(torrent) {
       }
     },
     function (err) {
-      console.log(err);
+      console.log(err,'error');
     });
   });
 
